@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Registration() {
   const [userName, setUserName] = useState("");
@@ -17,6 +18,8 @@ function Registration() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleUserNameChange = (event) => {
-    setUserName(event.target.value);
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -15,6 +16,8 @@ function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
+    const navigate = useNavigate();
 
     try {
       const response = await axios.post("http://localhost:5000/auth/signin", {
@@ -45,8 +48,8 @@ function Login() {
           <input
             type="text"
             id="email"
-            value={userName}
-            onChange={handleUserNameChange}
+            value={email}
+            onChange={handleEmailChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
