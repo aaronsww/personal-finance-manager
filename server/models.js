@@ -17,7 +17,7 @@ const User = mongoose.model(
 const Transaction = mongoose.model(
   "Transaction",
   new mongoose.Schema({
-    date: Date,
+    time: Date,
     payerId: ObjectId,
     payeeId: ObjectId,
     amount: Number,

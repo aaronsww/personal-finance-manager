@@ -20,6 +20,7 @@ router.route("/auth/signup").post(async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: encryptedPassword,
+    balance: 0,
   });
 
   const result = await user.save();
@@ -28,7 +29,7 @@ router.route("/auth/signup").post(async (req, res) => {
 
 router.route("/auth/signin").post(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
-  const result = await bcrypt.compare(req.body.password, user?.password);
+  const result = await bcrypt.compare(req.body.password, user?.password || "");
 
   if (result) {
     const token = jwt.sign(
@@ -56,6 +57,39 @@ router.route("/transaction").get(authenticateJWT, async (req, res) => {
     $or: [{ payerId: req.user.id }, { payeeId: req.user.id }],
   });
   res.json(transactions);
+});
+
+router.route("/pay").post(authenticateJWT, async (req, res) => {
+  const payee = await User.findById(req.body.payeeId);
+  const payer = await User.findById(req.user.id);
+  const amount = req.body.amount;
+
+  if ((payer.balance || 0) < amount) {
+    res
+      .status(400)
+      .send({ message: "Could not make payment due to insufficient funds." });
+    return;
+  } else if (amount < 0)
+    res.status(400).send({ message: "Cannot pay negative amount." });
+
+  const transaction = Transaction({
+    payerId: payer.id,
+    payeeId: payee.id,
+    amount: amount,
+    time: Date.now(),
+  });
+
+  await User.findOneAndUpdate(
+    { _id: payer.id },
+    { $set: { balance: (payer.balance || 0) - amount } }
+  );
+  await User.findOneAndUpdate(
+    { _id: payee.id },
+    { $set: { balance: (payee.balance || 0) + amount } }
+  );
+
+  transaction.save();
+  res.send(transaction);
 });
 
 module.exports = router;
