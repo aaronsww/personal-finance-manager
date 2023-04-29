@@ -1,25 +1,30 @@
-import React, { useEffect, useState } from "react";
-import walletImg from "./wallet.png";
+import React, { useContext, useEffect, useState } from "react";
+import walletImg from "../images/wallet.png";
 import axios from "axios";
+import { AuthContext } from "./AuthProvider";
 
 function Wallet() {
   const [savings, setSavings] = useState(0);
   const [show, setShow] = useState();
+
+  const { user } = useContext(AuthContext);
 
   const handleSavingsChange = (event) => {
     setSavings(event.target.value);
     setShow(true);
   };
 
-  const handleClick = () => {
-    useEffect(() => {
-      axios.post(
-        "http://localhost:5000/me",
-        {},
-        { headers: { Authorization: "Bearer " } }
-      );
-    }, []);
-  };
+  useEffect(() => {
+    (async () => {
+      console.log(user.token);
+      const response = await axios.get("http://localhost:5000/me", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      console.log(response);
+    })();
+  }, []);
+
+  const handleClick = async () => {};
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-blue-100">
