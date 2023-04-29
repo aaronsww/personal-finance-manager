@@ -1,10 +1,9 @@
 import { useState } from "react";
 import Users from "./Users";
 import { Link } from "react-router-dom";
-function Card({ username }) {
+function Card({ username, id }) {
   console.log(username);
 
-  //   const [name, setName] = useState(username);
   return (
     <Link to="/chat">
       <div className="flex flex-col items-center ml-10">
