@@ -39,8 +39,15 @@ router.route("/auth/signin").post(async (req, res) => {
   } else res.status(400).send({ message: "Received invalid credentials." });
 });
 
+router.route("/user/search").get(async (req, res) => {
+  const users = await User.find({ name: { $regex: req.query.name } }).select(
+    "-password"
+  );
+  res.json(users);
+});
+
 router.route("/me").post(authenticateJWT, async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user.id).select("-password");
   res.json(user);
 });
 
