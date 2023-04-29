@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { User, Transaction } = require("./models");
+const { User, Transaction, Group } = require("./models");
 const authenticateJWT = require("./middleware");
 
 router.route("/auth/signup").post(async (req, res) => {
@@ -47,8 +47,10 @@ router.route("/user/search").get(async (req, res) => {
   res.json(users);
 });
 
-router.route("/me").post(authenticateJWT, async (req, res) => {
+router.route("/me").get(authenticateJWT, async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
+  user.groups = await User.find({ "users.id": req.user.id });
+
   res.json(user);
 });
 
@@ -65,31 +67,86 @@ router.route("/pay").post(authenticateJWT, async (req, res) => {
   const amount = req.body.amount;
 
   if ((payer.balance || 0) < amount) {
-    res
-      .status(400)
-      .send({ message: "Could not make payment due to insufficient funds." });
+    res.status(400).send({
+      message: "Could not initiate payment due to insufficient funds.",
+    });
     return;
-  } else if (amount < 0)
+  } else if (amount < 0) {
     res.status(400).send({ message: "Cannot pay negative amount." });
+    return;
+  }
 
   const transaction = Transaction({
     payerId: payer.id,
     payeeId: payee.id,
     amount: amount,
     time: Date.now(),
+    status: "PENDING_APPROVAL",
   });
 
-  await User.findOneAndUpdate(
-    { _id: payer.id },
-    { $set: { balance: (payer.balance || 0) - amount } }
-  );
-  await User.findOneAndUpdate(
-    { _id: payee.id },
-    { $set: { balance: (payee.balance || 0) + amount } }
+  const result = await transaction.save();
+  res.send(result);
+});
+
+router.route("/pay/verify").get(authenticateJWT, async (req, res) => {
+  if (req.user.id !== transaction.payeeId) {
+    res
+      .status(403)
+      .send({ message: "Cannot approve another user's receipt. " });
+    return;
+  }
+
+  const transaction = await Transaction.findOneAndUpdate(
+    { _id: req.query.id },
+    { $set: { status: req.query.status ? "VERIFIED" : "REJECTED" } },
+    { new: true }
   );
 
-  transaction.save();
-  res.send(transaction);
+  if (transaction) {
+    if (req.query.status) {
+      await User.findOneAndUpdate(
+        { _id: transaction.payerId },
+        { $inc: { balance: -transaction.amount } }
+      );
+
+      await User.findOneAndUpdate(
+        { _id: transaction.payeeId },
+        { $inc: { balance: transaction.amount } }
+      );
+    }
+
+    res.send(transaction);
+  } else
+    res
+      .status(404)
+      .send({ message: `No such transaction with id ${req.query.id}` });
+});
+
+router.route("/group/create").post(authenticateJWT, (req, res) => {
+  const group = Group({
+    name: req.body.name,
+    users: req.body.users,
+  });
+
+  group.save();
+  res.send(group);
+});
+
+router.route("/me/debtors/add").post(authenticateJWT, async (req, res) => {
+  const debtorId = req.body.debtorId;
+  const amount = req.body.amount;
+
+  await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { $push: { debtors: { userId: debtorId, amount } } }
+  );
+
+  await User.findOneAndUpdate(
+    { _id: debtorId },
+    { $push: { creditors: { userId: req.user.id, amount } } }
+  );
+
+  res.send({ message: "Operation success" });
 });
 
 module.exports = router;
