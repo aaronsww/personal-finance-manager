@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const ObjectId = mongoose.Types.ObjectId;
+
 const User = mongoose.model(
   "User",
   new mongoose.Schema({
@@ -12,8 +14,14 @@ const User = mongoose.model(
   })
 );
 
-// const Transaction = mongoose.model("Transaction");
+const Transaction = mongoose.model(
+  "Transaction",
+  new mongoose.Schema({
+    date: Date,
+    payerId: ObjectId,
+    payeeId: ObjectId,
+    amount: Number,
+  })
+);
 
-module.exports = {
-  User,
-};
+module.exports = { User, Transaction };

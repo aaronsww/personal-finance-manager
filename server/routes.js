@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { User } = require("./models");
+const { User, Transaction } = require("./models");
 const authenticateJWT = require("./middleware");
 
 router.route("/auth/signup").post(async (req, res) => {
@@ -40,15 +40,22 @@ router.route("/auth/signin").post(async (req, res) => {
 });
 
 router.route("/user/search").get(async (req, res) => {
-  const users = await User.find({ name: { $regex: req.query.name } }).select(
-    "-password"
-  );
+  const users = await User.find({
+    name: { $regex: req.query.name || "", $options: "i" },
+  }).select("-password");
   res.json(users);
 });
 
 router.route("/me").post(authenticateJWT, async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   res.json(user);
+});
+
+router.route("/transaction").get(authenticateJWT, async (req, res) => {
+  const transactions = await Transaction.find({
+    $or: [{ payerId: req.user.id }, { payeeId: req.user.id }],
+  });
+  res.json(transactions);
 });
 
 module.exports = router;
