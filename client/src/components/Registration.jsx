@@ -1,21 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Registration() {
   const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleUserNameChange = (event) => {
     setUserName(event.target.value);
   };
 
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     //Call Backend
+    try {
+      const response = await axios.post("http://localhost:5000/auth/signup", {
+        name: userName,
+        email,
+        password,
+      });
+      console.log(response.data);
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
   };
 
   return (
@@ -46,8 +63,8 @@ function Registration() {
           <input
             type="text"
             id="email"
-            value={userName}
-            onChange={handleUserNameChange}
+            value={email}
+            onChange={handleEmailChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>

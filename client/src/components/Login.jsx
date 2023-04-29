@@ -13,9 +13,22 @@ function Login() {
     setPassword(event.target.value);
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    // Do something to log the user in
+
+    try {
+      const response = await axios.post("http://localhost:5000/auth/signin", {
+        email,
+        password,
+      });
+      console.log(response.headers);
+      if (response.status === 200) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(response);
+      alert(res.data.message);
+    }
   };
 
   return (
