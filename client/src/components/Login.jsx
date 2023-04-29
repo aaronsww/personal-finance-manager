@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "./AuthProvider";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -19,19 +21,7 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:5000/auth/signin", {
-        email,
-        password,
-      });
-      console.log(response.headers);
-      if (response.status === 200) {
-        navigate("/");
-      }
-    } catch (error) {
-      console.log(response);
-      alert(res.data.message);
-    }
+    await login(email, password);
   };
 
   return (
