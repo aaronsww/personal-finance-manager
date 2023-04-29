@@ -6,6 +6,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -16,8 +18,6 @@ function Login() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
-    const navigate = useNavigate();
 
     try {
       const response = await axios.post("http://localhost:5000/auth/signin", {
