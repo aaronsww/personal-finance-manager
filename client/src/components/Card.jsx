@@ -7,7 +7,7 @@ function Card({ username }) {
 
   //   const [name, setName] = useState(username);
   return (
-    <Link>
+    <Link to="/chat">
       <div className="flex flex-col items-center ml-10">
         <img className="rounded-full" src="" alt="big image"></img>
         <h2 className="font-bold text-xl">{username}</h2>{" "}
