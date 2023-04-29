@@ -1,4 +1,4 @@
-import CardGroup from "./CardGroup";
+import CardGroup from "./GroupCard";
 import React from "react";
 
 export default function () {
