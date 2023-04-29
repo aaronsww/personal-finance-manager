@@ -25,11 +25,11 @@ function Users() {
   };
 
   return (
-    <div className="h-40 bg-sky-100 p-4">
+    <div className="py  -10 bg-sky-100 p-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-start text-black font-serif text-lg font-black">
+        <p className="text-start text-black text-3xl ml-12 mb-6 font-bold ">
           Users
-        </h1>
+        </p>
         <input
           type="text"
           value={searchUser}
