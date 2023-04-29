@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Registration() {
   const [userName, setUserName] = useState("");
@@ -14,7 +15,7 @@ function Registration() {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    // Do something to log the user in
+    //Call Backend
   };
 
   return (
@@ -65,9 +66,9 @@ function Registration() {
           />
         </div>
         <div className="mb-4 flex items-center justify-between">
-          <a href="" className="text-gray-600 mr-2">
+          <Link to="/Login" className=" mr-2">
             Already have an account?
-          </a>
+          </Link>
         </div>
         <div className="mb-4">
           <button

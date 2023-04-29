@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Login() {
   const [userName, setUserName] = useState("");
@@ -24,13 +25,13 @@ function Login() {
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
           <label
-            htmlFor="username"
+            htmlFor="email"
             className="block text-gray-700 font-bold mb-2 text-left">
-            User Name
+            Email
           </label>
           <input
             type="text"
-            id="username"
+            id="email"
             value={userName}
             onChange={handleUserNameChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -51,7 +52,9 @@ function Login() {
           />
         </div>
         <div className="mb-4 flex items-center justify-between">
-          <a className="text-gray-600 mr-2">Don't have an account?</a>
+          <Link to="/registration" className="text-gray-600 mr-2">
+            Don't have an account?
+          </Link>
         </div>
         <div className="mb-4">
           <button
