@@ -38,11 +38,13 @@ function Login() {
     <div className="max-w-md mx-auto mt-8">
       <form
         onSubmit={handleLogin}
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      >
         <div className="mb-4">
           <label
             htmlFor="email"
-            className="block text-gray-700 font-bold mb-2 text-left">
+            className="block text-gray-700 font-bold mb-2 text-left"
+          >
             Email
           </label>
           <input
@@ -56,7 +58,8 @@ function Login() {
         <div className="mb-4">
           <label
             htmlFor="password"
-            className="block text-gray-700 font-bold mb-2 text-left">
+            className="block text-gray-700 font-bold mb-2 text-left"
+          >
             Password
           </label>
           <input
@@ -75,7 +78,8 @@ function Login() {
         <div className="mb-4">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+          >
             Log In
           </button>
         </div>
