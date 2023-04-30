@@ -27,6 +27,11 @@ function Home() {
               Debt
             </button>
           </Link>
+          <Link to="/transaction">
+            <button class="text-black font-serif rounded-md px-4 py-2">
+              Notifications
+            </button>
+          </Link>
           <button
             onClick={togglePopup}
             className="text-black font-serif rounded-md px-4 py-2 mr-4"
