@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
+import ProfileImg from "../images/profile.jpg";
 
 export default function () {
   const [searchUser, setSearchUser] = useState("");
@@ -12,6 +13,7 @@ export default function () {
 
   const [show, setShow] = useState();
   const [debtor, setDebtor] = useState({});
+  const [debtors, setDebtors] = useState([]);
   const perfromSearch = (user) => {
     axios
       .get(`http://localhost:5000/user/search?name=${searchUser}`)
@@ -32,6 +34,17 @@ export default function () {
     );
     navigate("/");
   };
+
+  useEffect(() => {
+    (async () => {
+      console.log(user.token);
+      const response = await axios.get("http://localhost:5000/me/debtors", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      console.log(response.data);
+      setDebtors(response.data);
+    })();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen ">
@@ -71,6 +84,19 @@ export default function () {
             </button>
           </div>
         )}
+      </div>
+      <div className="flex">
+        {debtors.map((user) => (
+          <div className="m-4">
+            <img src={ProfileImg} className="h-40 w-40"></img>
+            <div className="text-lg font-medium">
+              Name : <span className="font-bold">{user.name}</span>
+            </div>
+            <div className="text-lg font-medium">
+              Amount : <span className="font-bold">{user.amount}</span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
