@@ -22,8 +22,7 @@ function Home() {
         });
         setBalance(response.data.balance);
       } catch (err) {
-        console.error(err);
-        alert(err.response.data.message || err);
+        console.error(err); 
       }
     })();
   }, [user.token]);
