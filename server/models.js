@@ -9,13 +9,19 @@ const User = mongoose.model(
     email: { type: String, unique: true },
     password: String,
     balance: Number,
-    debtors: [
-      {
-        userId: ObjectId,
-        amount: Number,
-      },
-    ],
-    creditors: [
+    // debtors: [
+    //   {
+    //     userId: ObjectId,
+    //     amount: Number,
+    //   },
+    // ],
+    // creditors: [
+    //   {
+    //     userId: ObjectId,
+    //     amount: Number,
+    //   },
+    // ],
+    counterParties: [
       {
         userId: ObjectId,
         amount: Number,

@@ -71,44 +71,51 @@ router.route("/pay/verify").get(authenticateJWT, async (req, res) => {
       .send({ message: `No such transaction with id ${req.query.id}` });
 });
 
-router.route("/me/debtors/add").post(authenticateJWT, async (req, res) => {
-  const debtorId = req.body.debtorId;
-  const amount = req.body.amount;
+router
+  .route("/me/counter-parties/add")
+  .post(authenticateJWT, async (req, res) => {
+    const counterPartyId = req.body.counterPartyId;
+    let amount = req.body.amount;
 
-  // await User.findOneAndUpdate(
-  //   { _id: req.user.id },
-  //   { $push: { debtors: { userId: debtorId, amount } } }
-  // );
+    // await User.findOneAndUpdate(
+    //   { _id: req.user.id },
+    //   { $push: { debtors: { userId: debtorId, amount } } }
+    // );
 
-  let user = await User.findById(req.user.id);
-  const debtor = user.debtors.find((debtor) => debtor.userId == debtorId);
-  if (debtor) debtor.amount += amount;
-  else
-    user.debtors.push({
-      userId: debtorId,
-      amount: amount,
-    });
-  await user.save();
+    let user = await User.findById(req.user.id);
+    const debtor = user.counterParties.find(
+      (counterParty) => counterParty.userId == counterPartyId
+    );
+    if (debtor) debtor.amount += amount;
+    else
+      user.counterParties.push({
+        userId: counterPartyId,
+        amount: amount,
+      });
+    await user.save();
 
-  // await User.findOneAndUpdate(
-  //   { _id: debtorId },
-  //   { $push: { creditors: { userId: req.user.id, amount } } }
-  // );
+    // await User.findOneAndUpdate(
+    //   { _id: debtorId },
+    //   { $push: { creditors: { userId: req.user.id, amount } } }
+    // );
 
-  user = await User.findById(debtorId);
-  const creditor = user.creditors.find(
-    (creditor) => creditor.userId == req.user.id
-  );
-  if (creditor) creditor.amount += amount;
-  else
-    user.creditors.push({
-      userId: req.user.id,
-      amount: amount,
-    });
-  await user.save();
+    // Negate amount for creditor
+    amount = -amount;
 
-  res.send({ message: "Operation success" });
-});
+    user = await User.findById(counterPartyId);
+    const creditor = user.counterParties.find(
+      (creditor) => creditor.userId == req.user.id
+    );
+    if (creditor) creditor.amount += amount;
+    else
+      user.counterParties.push({
+        userId: req.user.id,
+        amount: amount,
+      });
+    await user.save();
+
+    res.send({ message: "Operation success" });
+  });
 
 router.route("/me/balance").get(authenticateJWT, async (req, res) => {
   const result = await User.findById(req.user.id).select("balance");
@@ -125,38 +132,39 @@ router.route("/me/balance").patch(authenticateJWT, async (req, res) => {
   res.send(result);
 });
 
-router.route("/me/debtors").get(authenticateJWT, async (req, res) => {
-  const user = (await User.findById(req.user.id).select("debtors")) || {};
-  const debtorDetails = [];
+router.route("/me/counter-parties").get(authenticateJWT, async (req, res) => {
+  const user =
+    (await User.findById(req.user.id).select("counterParties")) || {};
+  const counterPartiesDetails = [];
 
-  for (const debtor of user.debtors) {
-    const user = await User.findById(debtor.userId);
-    debtorDetails.push({
-      _id: debtor._id,
-      userId: debtor.userId,
+  for (const counterParty of user.counterParties) {
+    const user = await User.findById(counterParty.userId);
+    counterPartiesDetails.push({
+      _id: counterParty._id,
+      userId: counterParty.userId,
       name: user.name,
-      amount: debtor.amount,
+      amount: counterParty.amount,
     });
   }
 
-  res.send(debtorDetails);
+  res.send(counterPartiesDetails);
 });
 
-router.route("/me/creditors").get(authenticateJWT, async (req, res) => {
-  const user = (await User.findById(req.user.id).select("creditors")) || {};
-  const creditorDetails = [];
+// router.route("/me/creditors").get(authenticateJWT, async (req, res) => {
+//   const user = (await User.findById(req.user.id).select("creditors")) || {};
+//   const creditorDetails = [];
 
-  for (const creditor of user.creditors) {
-    const user = await User.findById(creditor.userId);
-    creditorDetails.push({
-      _id: creditor._id,
-      userId: creditor.userId,
-      name: user.name,
-      amount: creditor.amount,
-    });
-  }
+//   for (const creditor of user.creditors) {
+//     const user = await User.findById(creditor.userId);
+//     creditorDetails.push({
+//       _id: creditor._id,
+//       userId: creditor.userId,
+//       name: user.name,
+//       amount: creditor.amount,
+//     });
+//   }
 
-  res.send(creditorDetails);
-});
+//   res.send(creditorDetails);
+// });
 
 module.exports = router;
