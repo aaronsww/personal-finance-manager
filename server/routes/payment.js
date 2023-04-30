@@ -113,6 +113,7 @@ router.route("/me/debtors").get(authenticateJWT, async (req, res) => {
       _id: debtor._id,
       userId: debtor.userId,
       name: user.name,
+      amount: debtor.amount,
     });
   }
 
@@ -129,6 +130,7 @@ router.route("/me/creditors").get(authenticateJWT, async (req, res) => {
       _id: creditor._id,
       userId: creditor.userId,
       name: user.name,
+      amount: creditor.amount,
     });
   }
 
