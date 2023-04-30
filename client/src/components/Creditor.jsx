@@ -1,50 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
 
 export default function () {
-  const [searchUser, setSearchUser] = useState("");
-  const [amount, setAmount] = useState();
+  const { user } = useContext(AuthContext);
 
+  const [creditors, setCreditors] = useState([]);
   const [show, setShow] = useState();
-  const [users, setUsers] = useState([{}]);
-  const perfromSearch = (user) => {
-    axios.get(`http://localhost:5000/user/search?name=${user}`).then((res) => {
-      console.log(res.data);
-      setUsers([...users, { id: res.data[0]._id, name: res.data[0].name }]);
-      setShow(true);
-    });
-  };
 
-  const handleClick = (amount) => {
-    axios.post("//URL", {
-      //send amount
-    });
-  };
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      console.log(user.token);
+      const response = await axios.get("http://localhost:5000/me/creditors", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setCreditors(response.data);
+      console.log(response);
+      setShow(true);
+    })();
+  }, []);
+
   return (
     <div>
       <h1>Creditors</h1>
-      <input
-        type="text"
-        value={searchUser}
-        onChange={(e) => setSearchUser(e.target.value)}
-        placeholder="Search Username"
-        className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2"
-      />
-      <button onClick={() => perfromSearch(searchUser)}>Search</button>
-      {show && (
-        <div>
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="Amount Owed by you"
-            className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2"
-          />
-          <button onClick={() => handleClick(amount)}>Submit</button>
-        </div>
-      )}
-
-      {/* {users.map((user) => user.name)} */}
+      {show && creditors.map((user) => <div>{user.name}</div>)}
     </div>
   );
 }
