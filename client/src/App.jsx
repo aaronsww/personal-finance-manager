@@ -11,6 +11,7 @@ import Wallet from "./components/Wallet";
 import Debtor from "./components/Debtor";
 import Creditor from "./components/Creditor";
 import { AuthProvider } from "./components/AuthProvider";
+import Transaction from "./components/Transaction";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -27,6 +28,7 @@ function App() {
           <Route path="/creditor" element={<Creditor />}></Route>
           <Route path="/debtor" element={<Debtor />}></Route>
           <Route path="/registration" element={<Registration />}></Route>
+          <Route path="/transaction" element={<Transaction />}></Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
