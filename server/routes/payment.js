@@ -23,8 +23,6 @@ router.route("/pay").post(authenticateJWT, async (req, res) => {
     ],
   });
 
-  console.log(transactions);
-
   if ((payer.balance || 0) < amount) {
     res.status(400).send({
       message: "Could not initiate payment due to insufficient funds.",
@@ -54,21 +52,25 @@ router.route("/pay").post(authenticateJWT, async (req, res) => {
 });
 
 router.route("/pay/verify").get(authenticateJWT, async (req, res) => {
-  if (req.user.id !== transaction.payeeId) {
+  // const transaction = await Transaction.findOneAndUpdate(
+  //   { _id: req.query.id },
+  //   { $set: { status: req.query.status ? "VERIFIED" : "REJECTED" } },
+  //   { new: true }
+  // );
+
+  const transaction = await Transaction.findById(req.query.id);
+
+  if (req.user.id != transaction.payeeId) {
     res
       .status(403)
       .send({ message: "Cannot approve another user's receipt. " });
     return;
   }
 
-  const transaction = await Transaction.findOneAndUpdate(
-    { _id: req.query.id },
-    { $set: { status: req.query.status ? "VERIFIED" : "REJECTED" } },
-    { new: true }
-  );
-
   if (transaction) {
-    if (req.query.status) {
+    if (req.query.status === "true") {
+      transaction.status = "VERIFIED";
+
       await User.findOneAndUpdate(
         { _id: transaction.payerId },
         { $inc: { balance: -transaction.amount } }
@@ -78,7 +80,10 @@ router.route("/pay/verify").get(authenticateJWT, async (req, res) => {
         { _id: transaction.payeeId },
         { $inc: { balance: transaction.amount } }
       );
-    }
+    } else transaction.status = "REJECTED";
+
+    console.log(transaction.status, req.query.status);
+    await transaction.save();
 
     res.send(transaction);
   } else

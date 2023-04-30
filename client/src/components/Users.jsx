@@ -25,10 +25,11 @@ function Users() {
   };
 
   return (
-    <div className=" border-2 flex-1 py-10 bg-sky-100 p-4">
+    <div className="min-h-screen border-2 flex-1 py-10 bg-sky-100 p-4">
       <div className="flex justify-between items-center">
-        <p className="text-start text-black text-3xl ml-12 mb-6 font-bold ">
-          Users
+        <p className="text-start text-black text-xl ml-12 mb-6 font-bold ">
+          <span className="text-4xl">Users</span>
+          <p className="text-start font-semibold">Our faithful users! ;)</p>
         </p>
         <div>
           <input
@@ -38,7 +39,12 @@ function Users() {
             placeholder="Search"
             className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2 "
           />
-          <button onClick={() => perfromSearch(searchUser)}>Search</button>
+          <button
+            className="p-1 px-4 bg-indigo-400 rounded ml-2"
+            onClick={() => perfromSearch(searchUser)}
+          >
+            Search
+          </button>
         </div>
       </div>
 

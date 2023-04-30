@@ -25,16 +25,23 @@ export default function Creditor() {
       console.log(response);
       setShow(true);
     })();
-  }, []);
+  }, [user.token]);
 
   const payup = async (settleUser) => {
-    const res = await axios.post(
-      "http://localhost:5000/pay",
-      { payeeId: settleUser.userId, amount: Math.abs(settleUser.amount) },
-      {
-        headers: { Authorization: `Bearer ${user.token}` },
-      }
-    );
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/pay",
+        { payeeId: settleUser.userId, amount: Math.abs(settleUser.amount) },
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+
+      navigate("/transaction");
+    } catch (err) {
+      console.log(err.response.data.message);
+      alert(err.response.data.message || err);
+    }
   };
 
   return (
@@ -50,7 +57,7 @@ export default function Creditor() {
             <div className="text-lg font-medium">
               Amount : <span className="font-bold">{user.amount}</span>
             </div>
-            <button onClick={() => payup(user)}>Pay</button>
+            <button className="bg-green-500 hover:bg-green-400 text-white font-semibold  rounded-md px-4 py-2 mr-4" onClick={() => payup(user)}>Pay</button>
           </div>
         ))}
       </div>

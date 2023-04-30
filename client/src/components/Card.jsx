@@ -7,7 +7,7 @@ function Card({ username, id }) {
   console.log(username);
 
   return (
-    <Link to="/chat">
+     
       <div className="flex flex-col items-center ml-10">
         <img
           className="rounded-full h-32 w-32 "
@@ -16,7 +16,7 @@ function Card({ username, id }) {
         ></img>
         <p className="font-medium text-sm">{username}</p>
       </div>
-    </Link>
+    
   );
 }
 
