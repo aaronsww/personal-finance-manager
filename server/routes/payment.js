@@ -75,15 +75,37 @@ router.route("/me/debtors/add").post(authenticateJWT, async (req, res) => {
   const debtorId = req.body.debtorId;
   const amount = req.body.amount;
 
-  await User.findOneAndUpdate(
-    { _id: req.user.id },
-    { $push: { debtors: { userId: debtorId, amount } } }
-  );
+  // await User.findOneAndUpdate(
+  //   { _id: req.user.id },
+  //   { $push: { debtors: { userId: debtorId, amount } } }
+  // );
 
-  await User.findOneAndUpdate(
-    { _id: debtorId },
-    { $push: { creditors: { userId: req.user.id, amount } } }
+  let user = await User.findById(req.user.id);
+  const debtor = user.debtors.find((debtor) => debtor.userId == debtorId);
+  if (debtor) debtor.amount += amount;
+  else
+    user.debtors.push({
+      userId: debtorId,
+      amount: amount,
+    });
+  await user.save();
+
+  // await User.findOneAndUpdate(
+  //   { _id: debtorId },
+  //   { $push: { creditors: { userId: req.user.id, amount } } }
+  // );
+
+  user = await User.findById(debtorId);
+  const creditor = user.creditors.find(
+    (creditor) => creditor.userId == req.user.id
   );
+  if (creditor) creditor.amount += amount;
+  else
+    user.creditors.push({
+      userId: req.user.id,
+      amount: amount,
+    });
+  await user.save();
 
   res.send({ message: "Operation success" });
 });
