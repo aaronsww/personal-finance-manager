@@ -1,6 +1,6 @@
-const router = require("express").Router()
+const router = require("express").Router();
 
-const { Group } = require("../models");
+const { Group, User } = require("../models");
 const authenticateJWT = require("../middleware");
 
 router.route("/group/create").post(authenticateJWT, (req, res) => {
@@ -11,6 +11,16 @@ router.route("/group/create").post(authenticateJWT, (req, res) => {
 
   group.save();
   res.send(group);
+});
+
+router.route("/group/:id").get(authenticateJWT, async (req, res) => {
+  const group = await Group.findById(req.params.id);
+  const memberIds = group.members.map((member) => member.memberId);
+  const users = await User.find({ _id: { $in: memberIds } }).select(
+    "-password -balance -creditors -debtors"
+  );
+
+  res.send(users);
 });
 
 router.route("/group/members").post(authenticateJWT, async (req, res) => {
