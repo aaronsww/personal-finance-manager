@@ -103,4 +103,36 @@ router.route("/me/balance").patch(authenticateJWT, async (req, res) => {
   res.send(result);
 });
 
+router.route("/me/debtors").get(authenticateJWT, async (req, res) => {
+  const user = (await User.findById(req.user.id).select("debtors")) || {};
+  const debtorDetails = [];
+
+  for (const debtor of user.debtors) {
+    const user = await User.findById(debtor.userId);
+    debtorDetails.push({
+      _id: debtor._id,
+      userId: debtor.userId,
+      name: user.name,
+    });
+  }
+
+  res.send(debtorDetails);
+});
+
+router.route("/me/creditors").get(authenticateJWT, async (req, res) => {
+  const user = (await User.findById(req.user.id).select("creditors")) || {};
+  const creditorDetails = [];
+
+  for (const creditor of user.creditors) {
+    const user = await User.findById(creditor.userId);
+    creditorDetails.push({
+      _id: creditor._id,
+      userId: creditor.userId,
+      name: user.name,
+    });
+  }
+
+  res.send(creditorDetails);
+});
+
 module.exports = router;
