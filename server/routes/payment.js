@@ -88,4 +88,19 @@ router.route("/me/debtors/add").post(authenticateJWT, async (req, res) => {
   res.send({ message: "Operation success" });
 });
 
-module.exports = router
+router.route("/me/balance").get(authenticateJWT, async (req, res) => {
+  const result = await User.findById(req.user.id).select("balance");
+  res.send(result);
+});
+
+router.route("/me/balance").patch(authenticateJWT, async (req, res) => {
+  const result = await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { $set: { balance: req.body.balance } },
+    { new: true }
+  );
+
+  res.send(result);
+});
+
+module.exports = router;
