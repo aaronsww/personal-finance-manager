@@ -49,8 +49,10 @@ function Home() {
           )}
         </div>
       </nav>
-      <Users />
-      <Groups />
+      <div className="flex flex-wrap">
+        <Users />
+        <Groups />
+      </div>
     </div>
   );
 }

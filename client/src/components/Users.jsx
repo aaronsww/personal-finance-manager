@@ -25,19 +25,21 @@ function Users() {
   };
 
   return (
-    <div className="py  -10 bg-sky-100 p-4">
+    <div className=" border-2 flex-1 py-10 bg-sky-100 p-4">
       <div className="flex justify-between items-center">
         <p className="text-start text-black text-3xl ml-12 mb-6 font-bold ">
           Users
         </p>
-        <input
-          type="text"
-          value={searchUser}
-          onChange={(e) => setSearchUser(e.target.value)}
-          placeholder="Search"
-          className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2"
-        />
-        <button onClick={() => perfromSearch(searchUser)}>Search</button>
+        <div>
+          <input
+            type="text"
+            value={searchUser}
+            onChange={(e) => setSearchUser(e.target.value)}
+            placeholder="Search"
+            className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2 "
+          />
+          <button onClick={() => perfromSearch(searchUser)}>Search</button>
+        </div>
       </div>
 
       <div className="flex flex-wrap mt-4">
