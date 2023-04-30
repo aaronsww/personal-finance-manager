@@ -85,7 +85,8 @@ export default function () {
           </div>
         )}
       </div>
-      <div className="flex">
+      <div className="text-2xl mt-10 mb-5 font-bold">Debtors: </div>
+      <div className="flex flex-wrap">
         {debtors.map((user) => (
           <div className="m-4">
             <img src={ProfileImg} className="h-40 w-40"></img>
