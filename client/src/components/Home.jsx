@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Users from "./Users";
 import { Link } from "react-router-dom";
-import Groups from "./Groups";
 import { AuthContext } from "./AuthProvider";
 import axios from "axios";
 
