@@ -16,7 +16,7 @@ export default function () {
   };
   return (
     <div>
-      <button>+ Create Group</button>
+      <button className="border-2">+ Create Group</button>
       <input
         type="text"
         value={searchUser}
