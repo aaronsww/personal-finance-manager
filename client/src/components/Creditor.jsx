@@ -16,16 +16,18 @@ export default function () {
   };
 
   const handleClick = (amount) => {
-    axios.post;
+    axios.post("//URL", {
+      //send amount
+    });
   };
   return (
     <div>
-      <button>+ Creditors</button>
+      <h1>Creditors</h1>
       <input
         type="text"
         value={searchUser}
         onChange={(e) => setSearchUser(e.target.value)}
-        placeholder="Search"
+        placeholder="Search Username"
         className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2"
       />
       <button onClick={() => perfromSearch(searchUser)}>Search</button>
@@ -35,7 +37,7 @@ export default function () {
             type="text"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            placeholder="Enter Amount"
+            placeholder="Amount Owed by you"
             className="bg-white-200 border-none focus:outline-none rounded-md py-1 px-2"
           />
           <button onClick={() => handleClick(amount)}>Submit</button>

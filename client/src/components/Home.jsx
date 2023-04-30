@@ -16,11 +16,11 @@ function Home() {
         <div className="text-2xl font-bold">Cash Control</div>
 
         <div className="relative">
-          <Link to="/creditor">
+          {/* <Link to="/creditor">
             <button class=" text-black font-serif rounded-md px-4 py-2 mr-4">
               Credit
             </button>
-          </Link>
+          </Link> */}
           <Link to="/debtor">
             <button class="text-black font-serif rounded-md px-4 py-2">
               Debt
