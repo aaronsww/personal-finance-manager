@@ -18,7 +18,9 @@ app.get("/", (req, res) => {
   res.send("Express server running.");
 });
 
-app.use(require("./routes"));
+["group", "user", "payment"].forEach((route) =>
+  app.use(require(`./routes/${route}`))
+);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));

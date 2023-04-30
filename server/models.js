@@ -39,7 +39,7 @@ const Group = mongoose.model(
   "Group",
   new mongoose.Schema({
     name: String,
-    users: Array,
+    members: [{ memberId: ObjectId }],
   })
 );
 
