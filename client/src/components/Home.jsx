@@ -18,16 +18,15 @@ function Home() {
         </div>
         <div className="relative">
           <Link to="/creditor">
-            <button class=" text-black font-serif rounded-md px-4 py-2 mr-4">
+            <button className=" text-black font-serif rounded-md px-4 py-2 mr-4">
               Credit
             </button>
           </Link>
           <Link to="/debtor">
-            <button class="text-black font-serif rounded-md px-4 py-2">
+            <button className="text-black font-serif rounded-md px-4 py-2">
               Debt
             </button>
           </Link>
-
           <button
             onClick={togglePopup}
             className="text-black font-serif rounded-md px-4 py-2 mr-4"

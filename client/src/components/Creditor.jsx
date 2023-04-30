@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 import ProfileImg from "../images/profile.jpg";
 
-export default function () {
+export default function Creditor() {
   const { user } = useContext(AuthContext);
 
   const [creditors, setCreditors] = useState([]);
@@ -15,14 +15,27 @@ export default function () {
   useEffect(() => {
     (async () => {
       console.log(user.token);
-      const response = await axios.get("http://localhost:5000/me/creditors", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/me/counter-parties",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
       setCreditors(response.data);
       console.log(response);
       setShow(true);
     })();
   }, []);
+
+  const payup = async (settleUser) => {
+    const res = await axios.post(
+      "http://localhost:5000/pay",
+      { payeeId: settleUser.userId, amount: Math.abs(settleUser.amount) },
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }
+    );
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -37,6 +50,7 @@ export default function () {
             <div className="text-lg font-medium">
               Amount : <span className="font-bold">{user.amount}</span>
             </div>
+            <button onClick={() => payup(user)}>Pay</button>
           </div>
         ))}
       </div>

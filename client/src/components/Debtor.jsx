@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
 import ProfileImg from "../images/profile.jpg";
 
-export default function () {
+export default function Debtor() {
   const [searchUser, setSearchUser] = useState("");
   const { user } = useContext(AuthContext);
 
@@ -26,8 +26,8 @@ export default function () {
 
   const handleClick = async (amount) => {
     const response = await axios.post(
-      "http://localhost:5000/me/debtors/add",
-      { debtorId: debtor.id, amount: amount },
+      "http://localhost:5000/me/counter-parties/add",
+      { counterPartyId: debtor.id, amount: +amount },
       {
         headers: { Authorization: `Bearer ${user.token}` },
       }
@@ -38,9 +38,12 @@ export default function () {
   useEffect(() => {
     (async () => {
       console.log(user.token);
-      const response = await axios.get("http://localhost:5000/me/debtors", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/me/counter-parties",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
       console.log(response.data);
       setDebtors(response.data);
     })();

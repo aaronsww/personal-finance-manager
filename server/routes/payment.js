@@ -15,6 +15,16 @@ router.route("/pay").post(authenticateJWT, async (req, res) => {
   const payer = await User.findById(req.user.id);
   const amount = req.body.amount;
 
+  const transactions = await Transaction.find({
+    $and: [
+      { payerId: payer.id },
+      { payeeId: payee.id },
+      { status: "PENDING_APPROVAL" },
+    ],
+  });
+
+  console.log(transactions);
+
   if ((payer.balance || 0) < amount) {
     res.status(400).send({
       message: "Could not initiate payment due to insufficient funds.",
@@ -22,6 +32,12 @@ router.route("/pay").post(authenticateJWT, async (req, res) => {
     return;
   } else if (amount < 0) {
     res.status(400).send({ message: "Cannot pay negative amount." });
+    return;
+  } else if (transactions.length > 0) {
+    res.status(400).send({
+      message:
+        "Existing transaction must be verified or rejected first before initiating another.",
+    });
     return;
   }
 
